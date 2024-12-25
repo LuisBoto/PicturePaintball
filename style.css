@@ -1,0 +1,15 @@
+#paintball-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    display: none;
+}
+
+#image-upload {
+    position: absolute;
+    margin: auto;
+    width: 100dvw;
+    height: 100dvh;
+}
