@@ -22,12 +22,24 @@ const loadUploadedFile = (e) => {
 };
 imageInput.onchange = loadUploadedFile;
 
-const paintImageOnCanvas = () => {
-    const image = new Image();
-    image.onload = () => {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.drawImage(image, 0, 0);
+const paintImageOnCanvas = async () => {
+    const getImageData = async () => {
+        return new Promise(resolve => {
+            const image = new Image();
+            image.onload = () => {
+                const auxCanvas = document.createElement('canvas');
+                auxCanvas.width = image.width;
+                auxCanvas.height = image.height;
+                const auxCtx = auxCanvas.getContext('2d');
+                
+                auxCtx.fillStyle = "white";
+                auxCtx.fillRect(0, 0, image.width, image.height);
+                auxCtx.drawImage(image, 0, 0);
+                resolve(auxCtx.getImageData(0, 0, image.width, image.height));
+            };
+            image.src = base64Image;
+        });
     };
-    image.src = base64Image;
+    const imageData = await getImageData();
+    console.log(imageData);
 }
