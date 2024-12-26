@@ -51,9 +51,15 @@ const paintImageOnCanvas = async () => {
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
         if (imageRatio > screenRatio) { // Image is wider
-            return { x: canvasWidth * imageX/imageWidth, y: (canvasHeight * imageY/imageHeight)*imageRatio };
+            return { 
+                x: canvasWidth * imageX/imageWidth, 
+                y: canvasHeight*(imageRatio/screenRatio) * imageY/imageHeight
+            };
         } else { // Image is taller
-            return { x: (canvasWidth * imageX/imageWidth)*imageRatio, y: (canvasHeight * imageY/imageHeight) };
+            return { 
+                x: canvasWidth*(imageRatio/screenRatio) * imageX/imageWidth, 
+                y: canvasHeight * imageY/imageHeight
+            };
         }
     };
       
