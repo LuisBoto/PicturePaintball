@@ -50,14 +50,16 @@ const paintImageOnCanvas = async () => {
     const imageData = await getImageData();
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
+        const proportionalCanvasWidth = canvasWidth*(imageRatio/screenRatio);
+        const proportionalCanvasHeight = canvasHeight*(imageRatio/screenRatio);
         if (imageRatio > screenRatio) { // Image is wider
             return { 
                 x: canvasWidth * imageX/imageWidth, 
-                y: canvasHeight*(imageRatio/screenRatio) * imageY/imageHeight
+                y: proportionalCanvasHeight * imageY/imageHeight + Math.abs(canvasHeight - proportionalCanvasHeight)/2, 
             };
         } else { // Image is taller
             return { 
-                x: canvasWidth*(imageRatio/screenRatio) * imageX/imageWidth, 
+                x: proportionalCanvasWidth * imageX/imageWidth + Math.abs(canvasWidth - proportionalCanvasWidth)/2, 
                 y: canvasHeight * imageY/imageHeight
             };
         }
@@ -71,19 +73,27 @@ const paintImageOnCanvas = async () => {
         return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b) + componentToHex(a);
     }
 
-    new Array(imageData.data.length/4).fill(0)
-    .map((value, i) => {
-        const red = imageData.data[i*4];
-        const green = imageData.data[i*4+1];
-        const blue = imageData.data[i*4+2];
-        const alpha = imageData.data[i*4+3];
+    const getHexadecimalForImageDataIndex = (index) => {
+        const red = imageData.data[index*4];
+        const green = imageData.data[index*4+1];
+        const blue = imageData.data[index*4+2];
+        const alpha = imageData.data[index*4+3];
         return rgbToHex(red, green, blue, alpha);
-    }).forEach((value, i) => {
-        const x = i%imageData.width;
-        const y = parseInt(i/imageData.width);
+    };
+
+    const drawPixels = (index = 0) => {
+        if (index >= imageData.data.length/4)
+            return;
+        const x = index%imageData.width;
+        const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
-        ctx.fillStyle = value;
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 10, 10);
-    });
+        ctx.fillStyle = getHexadecimalForImageDataIndex(index);
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 2, 2);
+        if (Math.random() > 0.01)
+            drawPixels(index+1);
+        else
+            setTimeout(() => drawPixels(index+1));
+    };
+    drawPixels();
     //console.log(imageData);
 }
