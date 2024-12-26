@@ -51,11 +51,33 @@ const paintImageOnCanvas = async () => {
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
         if (imageRatio > screenRatio) { // Image is wider
-            return { x: canvasWidth*0.01 * imageX/imageWidth, y: (canvasHeight*0.01 * imageY/imageHeight)*imageRatio };
+            return { x: canvasWidth * imageX/imageWidth, y: (canvasHeight * imageY/imageHeight)*imageRatio };
         } else { // Image is taller
-            return { x: (canvasWidth*0.01 * imageX/imageWidth)*imageRatio, y: (canvasHeight*0.01 * imageY/imageHeight) };
+            return { x: (canvasWidth * imageX/imageWidth)*imageRatio, y: (canvasHeight * imageY/imageHeight) };
         }
     };
-    new Array(imageData.data.length/4).fill(0).map((value, i) => {});
-    console.log(imageData);
+      
+    const rgbToHex = (r, g, b, a) => {
+        const componentToHex = (c) => {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b) + componentToHex(a);
+    }
+
+    new Array(imageData.data.length/4).fill(0)
+    .map((value, i) => {
+        const red = imageData.data[i*4];
+        const green = imageData.data[i*4+1];
+        const blue = imageData.data[i*4+2];
+        const alpha = imageData.data[i*4+3];
+        return rgbToHex(red, green, blue, alpha);
+    }).forEach((value, i) => {
+        const x = i%imageData.width;
+        const y = parseInt(i/imageData.width);
+        const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
+        ctx.fillStyle = value;
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 10, 10);
+    });
+    //console.log(imageData);
 }
