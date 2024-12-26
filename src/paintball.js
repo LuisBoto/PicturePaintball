@@ -89,10 +89,10 @@ const paintImageOnCanvas = async () => {
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         ctx.fillStyle = getHexadecimalForImageDataIndex(index);
         ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 2, 2);
-        if (Math.random() > 0.01)
+        if (Math.random() > 0.001)
             drawPixels(index+1);
         else
-            setTimeout(() => drawPixels(index+1));
+            requestAnimationFrame(() => drawPixels(index+1));
     };
     drawPixels();
     //console.log(imageData);
