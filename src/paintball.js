@@ -81,19 +81,24 @@ const paintImageOnCanvas = async () => {
         return rgbToHex(red, green, blue, alpha);
     };
 
-    const drawPixels = (index = 0) => {
-        if (index >= imageData.data.length/4)
+    const drawPixels = (iteration = 0) => {
+        if (iteration >= imageData.data.length/4)
             return;
+        const index = getRandomIndex(iteration);
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         ctx.fillStyle = getHexadecimalForImageDataIndex(index);
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 2, 2);
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 3, 2);
         if (Math.random() > 0.001)
-            drawPixels(index+1);
+            drawPixels(iteration+1);
         else
-            requestAnimationFrame(() => drawPixels(index+1));
+            requestAnimationFrame(() => drawPixels(iteration+1));
     };
+
+    const getRandomIndex = (iterationCount) => {
+        return Math.floor(Math.random()*(imageData.data.length/4));
+    }
+
     drawPixels();
-    //console.log(imageData);
 }
