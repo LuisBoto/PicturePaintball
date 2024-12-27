@@ -13,6 +13,9 @@ let imageWidth;
 let imageHeight;
 let imageRatio;
 
+let proportionalCanvasWidth;
+let proportionalCanvasHeight;
+
 const loadUploadedFile = (e) => {
     const file = e.target.files[0];
     imageUrl = URL.createObjectURL(file);
@@ -31,8 +34,10 @@ const paintImageOnCanvas = async () => {
                 imageWidth = image.width;
                 imageHeight = image.height;
                 imageRatio = image.width / image.height;
-                const auxCtx = auxCanvas.getContext('2d');
-                
+                proportionalCanvasWidth = canvasWidth*(imageRatio/screenRatio);
+                proportionalCanvasHeight = canvasHeight*(screenRatio/imageRatio);
+
+                const auxCtx = auxCanvas.getContext('2d');                
                 auxCtx.fillStyle = "white";
                 auxCtx.fillRect(0, 0, image.width, image.height);
                 auxCtx.drawImage(image, 0, 0);
@@ -44,8 +49,6 @@ const paintImageOnCanvas = async () => {
     const imageData = await getImageData();
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
-        const proportionalCanvasWidth = canvasWidth*(imageRatio/screenRatio);
-        const proportionalCanvasHeight = canvasHeight*(screenRatio/imageRatio);
         if (imageRatio > screenRatio) { // Image is wider
             return { 
                 x: canvasWidth * imageX/imageWidth, 
@@ -78,14 +81,12 @@ const paintImageOnCanvas = async () => {
     const drawPixels = (iteration = 0) => {
         if (iteration >= imageData.data.length/4)
             return;
-        const pixelWidth = Math.max(imageData.width/canvasWidth, canvasWidth/imageData.width);
-        const pixelHeight = Math.max(imageData.height/canvasHeight, canvasHeight/imageData.height);
         const index = getRandomIndex(iteration);
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         ctx.fillStyle = getHexadecimalForImageDataIndex(index);
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, pixelWidth, pixelHeight);
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, proportionalCanvasWidth/imageData.width, proportionalCanvasHeight/imageData.height);
         if (Math.random() > 0.001)
             drawPixels(iteration+1);
         else
@@ -93,8 +94,8 @@ const paintImageOnCanvas = async () => {
     };
 
     const getRandomIndex = (iterationCount) => {
-        let index = Math.floor(Math.sin(iterationCount**10) * imageData.data.length/8 + imageData.data.length/8);
-        return index;
+        return Math.floor(Math.sin(iterationCount**10) * imageData.data.length/8 + imageData.data.length/8);
+        //return index;
         //return iterationCount;
     }
 
