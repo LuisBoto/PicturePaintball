@@ -84,12 +84,14 @@ const paintImageOnCanvas = async () => {
     const drawPixels = (iteration = 0) => {
         if (iteration >= imageData.data.length/4)
             return;
+        const pixelWidth = Math.max(imageData.width/canvasWidth, canvasWidth/imageData.width);
+        const pixelHeight = Math.max(imageData.height/canvasHeight, canvasHeight/imageData.height);
         const index = getRandomIndex(iteration);
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         ctx.fillStyle = getHexadecimalForImageDataIndex(index);
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, 3, 3);
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, pixelWidth, pixelHeight);
         if (Math.random() > 0.001)
             drawPixels(iteration+1);
         else
@@ -99,6 +101,7 @@ const paintImageOnCanvas = async () => {
     const getRandomIndex = (iterationCount) => {
         let index = Math.floor(Math.sin(iterationCount**10) * imageData.data.length/8 + imageData.data.length/8);
         return index;
+        //return iterationCount;
     }
 
     drawPixels();
