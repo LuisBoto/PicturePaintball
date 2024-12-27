@@ -8,21 +8,17 @@ let canvasHeight = window.innerHeight;
 const screenRatio = canvasWidth/canvasHeight;
 
 const imageInput = document.getElementById('image-upload');
-let base64Image;
+let imageUrl;
 let imageWidth;
 let imageHeight;
 let imageRatio;
 
 const loadUploadedFile = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        base64Image = reader.result;
-        canvas.style.display = 'block';
-        imageInput.style.display = 'none';
-        paintImageOnCanvas();
-    };
-    reader.readAsDataURL(file);
+    imageUrl = URL.createObjectURL(file);
+    canvas.style.display = 'block';
+    imageInput.style.display = 'none';
+    paintImageOnCanvas();
 };
 imageInput.onchange = loadUploadedFile;
 
@@ -31,9 +27,7 @@ const paintImageOnCanvas = async () => {
         return new Promise(resolve => {
             const image = new Image();
             image.onload = () => {
-                const auxCanvas = document.createElement('canvas');
-                auxCanvas.width = image.width;
-                auxCanvas.height = image.height;
+                const auxCanvas = new OffscreenCanvas(image.width, image.height);
                 imageWidth = image.width;
                 imageHeight = image.height;
                 imageRatio = image.width / image.height;
@@ -44,7 +38,7 @@ const paintImageOnCanvas = async () => {
                 auxCtx.drawImage(image, 0, 0);
                 resolve(auxCtx.getImageData(0, 0, image.width, image.height));
             };
-            image.src = base64Image;
+            image.src = imageUrl;
         });
     };
     const imageData = await getImageData();
