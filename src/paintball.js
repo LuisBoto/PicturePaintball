@@ -25,6 +25,28 @@ const loadUploadedFile = (e) => {
 };
 imageInput.onchange = loadUploadedFile;
 
+const getPaintSplashImage = async () => {
+    return new Promise(resolve => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.src = './paint.svg';
+    });
+};
+let paintSplashImage;
+let paintSplashCanvas;
+let paintSplashContext;
+const drawPaintSplash = (hexColor, x, y, width, height) => {
+    if (paintSplashCanvas == null) {
+        paintSplashCanvas = new OffscreenCanvas(width, height);
+        paintSplashContext = paintSplashCanvas.getContext('2d');
+        paintSplashContext.drawImage(paintSplashImage, 0, 0, width, height);
+    }
+    paintSplashContext.globalCompositeOperation = "source-in";
+    paintSplashContext.fillStyle = hexColor;
+    paintSplashContext.fillRect(0, 0, paintSplashCanvas.width, paintSplashCanvas.height);
+    ctx.drawImage(paintSplashCanvas, x, y, width, height);
+}
+
 const paintImageOnCanvas = async () => {
     const getImageData = async () => {
         return new Promise(resolve => {
@@ -47,19 +69,19 @@ const paintImageOnCanvas = async () => {
         });
     };
     const imageData = await getImageData();
+    paintSplashImage = await getPaintSplashImage();
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
-        if (imageRatio > screenRatio) { // Image is wider
+        if (imageRatio > screenRatio)  // Image is wider
             return { 
                 x: canvasWidth * imageX/imageWidth, 
                 y: proportionalCanvasHeight * imageY/imageHeight + Math.abs(canvasHeight - proportionalCanvasHeight)/2, 
             };
-        } else { // Image is taller
+        else // Image is taller
             return { 
                 x: proportionalCanvasWidth * imageX/imageWidth + Math.abs(canvasWidth - proportionalCanvasWidth)/2, 
                 y: canvasHeight * imageY/imageHeight
             };
-        }
     };
       
     const rgbToHex = (r, g, b, a) => {
@@ -85,8 +107,11 @@ const paintImageOnCanvas = async () => {
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
-        ctx.fillStyle = getHexadecimalForImageDataIndex(index);
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, proportionalCanvasWidth/imageData.width*1, proportionalCanvasHeight/imageData.height*1);
+        const hexColor = getHexadecimalForImageDataIndex(index);
+        const pixelWidth = Math.max(7, proportionalCanvasWidth/imageData.width);
+        const pixelHeight = Math.max(7, proportionalCanvasHeight/imageData.height);
+        const pixelSize = Math.max(pixelHeight, pixelWidth);
+        drawPaintSplash(hexColor, finalCoordinate.x, finalCoordinate.y, pixelSize, pixelSize);
         if (Math.random() > 0.001)
             drawPixels(iteration+1);
         else
