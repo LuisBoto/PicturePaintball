@@ -86,17 +86,19 @@ const paintImageOnCanvas = async () => {
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         ctx.fillStyle = getHexadecimalForImageDataIndex(index);
-        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, proportionalCanvasWidth/imageData.width, proportionalCanvasHeight/imageData.height);
+        ctx.fillRect(finalCoordinate.x, finalCoordinate.y, proportionalCanvasWidth/imageData.width*1, proportionalCanvasHeight/imageData.height*1);
         if (Math.random() > 0.001)
             drawPixels(iteration+1);
         else
             requestAnimationFrame(() => drawPixels(iteration+1));
     };
 
+    const availableIndexes = new Array(imageData.data.length/4).fill(null).map((_, index) => index);
     const getRandomIndex = (iterationCount) => {
-        return Math.floor(Math.sin(iterationCount**10) * imageData.data.length/8 + imageData.data.length/8);
-        //return index;
-        //return iterationCount;
+        const selectedIndex = Math.floor(Math.random() * (availableIndexes.length-1));
+        const result = availableIndexes[selectedIndex];
+        availableIndexes[selectedIndex] = availableIndexes.pop();
+        return result;
     }
 
     drawPixels();
