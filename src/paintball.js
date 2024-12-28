@@ -108,9 +108,9 @@ const paintImageOnCanvas = async () => {
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
         const hexColor = getHexadecimalForImageDataIndex(index);
-        const pixelWidth = Math.max(7, proportionalCanvasWidth/imageData.width);
-        const pixelHeight = Math.max(7, proportionalCanvasHeight/imageData.height);
-        const pixelSize = Math.max(pixelHeight, pixelWidth);
+        const pixelWidth = proportionalCanvasWidth/imageData.width;
+        const pixelHeight = proportionalCanvasHeight/imageData.height;
+        const pixelSize = Math.max(pixelHeight, pixelWidth, Math.random()*5);
         drawPaintSplash(hexColor, finalCoordinate.x, finalCoordinate.y, pixelSize, pixelSize);
         if (Math.random() > 0.001)
             drawPixels(iteration+1);
