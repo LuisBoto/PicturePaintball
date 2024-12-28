@@ -68,8 +68,8 @@ const paintImageOnCanvas = async () => {
             image.src = imageUrl;
         });
     };
-    const imageData = await getImageData();
     paintSplashImage = await getPaintSplashImage();
+    const imageData = await getImageData();
 
     const traslateImageCoordinateToCanvas = (imageX, imageY) => {
         if (imageRatio > screenRatio)  // Image is wider
