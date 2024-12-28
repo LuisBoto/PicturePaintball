@@ -81,7 +81,7 @@ const paintImageOnCanvas = async () => {
     const drawPixels = (iteration = 0) => {
         if (iteration >= imageData.data.length/4)
             return;
-        const index = getRandomIndex(iteration);
+        const index = getRandomIndex();
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
         const finalCoordinate = traslateImageCoordinateToCanvas(x, y);
@@ -93,12 +93,14 @@ const paintImageOnCanvas = async () => {
             requestAnimationFrame(() => drawPixels(iteration+1));
     };
 
-    const availableIndexes = new Array(imageData.data.length/4).fill(null).map((_, index) => index);
-    const getRandomIndex = (iterationCount) => {
+    const availableIndexes = new Array(imageData.data.length/4).fill(null);
+    const getRandomIndex = () => {
         const selectedIndex = Math.floor(Math.random() * (availableIndexes.length-1));
         const result = availableIndexes[selectedIndex];
         availableIndexes[selectedIndex] = availableIndexes.pop();
-        return result;
+        if (availableIndexes[selectedIndex] == null)
+            availableIndexes[selectedIndex] = availableIndexes.length;
+        return result == null ? selectedIndex : result;
     }
 
     drawPixels();
