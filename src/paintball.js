@@ -100,9 +100,7 @@ const paintImageOnCanvas = async () => {
         return rgbToHex(red, green, blue, alpha);
     };
 
-    const drawPixels = (iteration = 0) => {
-        if (iteration >= imageData.data.length/4)
-            return;
+    const drawRandomPixel = (iteration = 0) => {
         const index = getRandomIndex();
         const x = index%imageData.width;
         const y = parseInt(index/imageData.width);
@@ -112,10 +110,6 @@ const paintImageOnCanvas = async () => {
         const pixelHeight = proportionalCanvasHeight/imageData.height;
         const pixelSize = Math.max(pixelHeight, pixelWidth, Math.random()*5);
         drawPaintSplash(hexColor, finalCoordinate.x, finalCoordinate.y, pixelSize, pixelSize);
-        if (Math.random() > 0.001)
-            drawPixels(iteration+1);
-        else
-            requestAnimationFrame(() => drawPixels(iteration+1));
     };
 
     const availableIndexes = new Array(imageData.data.length/4).fill(null);
@@ -128,5 +122,14 @@ const paintImageOnCanvas = async () => {
         return result == null ? selectedIndex : result;
     }
 
-    drawPixels();
+    const mainLoop = (iterations = 0) => {
+        while (Math.random() > 0.01 && iterations < imageData.data.length/4) {
+            drawRandomPixel();
+            iterations++;
+        }
+        if (iterations < imageData.data.length/4)
+            requestAnimationFrame(() => mainLoop(iterations));
+    }
+
+    mainLoop();
 }
