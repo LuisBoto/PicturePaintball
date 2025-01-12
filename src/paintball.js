@@ -20,7 +20,7 @@ const loadUploadedFile = (e) => {
     const file = e.target.files[0];
     imageUrl = URL.createObjectURL(file);
     canvas.style.display = 'block';
-    imageInput.style.display = 'none';
+    document.getElementById('image-upload-label').style.display = 'none';
     paintImageOnCanvas();
 };
 imageInput.onchange = loadUploadedFile;

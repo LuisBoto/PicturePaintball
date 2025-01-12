@@ -6,7 +6,10 @@
         <link rel="stylesheet" href="./style.css">
     </head>
     <body>
-        <input id="image-upload" type="file" accept="image/png, image/jpeg, image/gif, image/webp, .svg">
+        <label id="image-upload-label" class="image-upload-custom-label" for="image-upload">
+            Upload image
+            <input id="image-upload" type="file" accept="image/png, image/jpeg, image/gif, image/webp, .svg">
+        </label>
         <canvas id="paintball-canvas"></canvas>
     
         <script src="./src/paintball.js"></script>

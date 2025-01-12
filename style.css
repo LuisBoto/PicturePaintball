@@ -1,3 +1,12 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
 #paintball-canvas {
     position: absolute;
     top: 0;
@@ -7,9 +16,20 @@
     display: none;
 }
 
-#image-upload {
-    position: absolute;
+.image-upload-custom-label {
+    background-color: rgba(139, 139, 139, 0.1);
+    border-radius: 5rem;
+    padding: 3.75rem 3rem;
+    cursor: pointer;
     margin: auto;
-    width: 100dvw;
-    height: 100dvh;
+    text-wrap: nowrap;
+    font-size: xx-large;
+}
+
+.image-upload-custom-label:hover {
+    background-color: rgba(255, 167, 167, 0.554);
+}
+
+#image-upload {
+    display: none;
 }
